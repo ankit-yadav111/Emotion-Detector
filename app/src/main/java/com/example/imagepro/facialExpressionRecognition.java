@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.os.CountDownTimer;
 import android.util.Log;
 
 import org.opencv.android.Utils;
@@ -29,7 +30,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.Arrays;
 
 public class facialExpressionRecognition {
     // define interpreter
@@ -44,11 +44,17 @@ public class facialExpressionRecognition {
     // it is use to implement gpu in interpreter
     private GpuDelegate gpuDelegate=null;
 
+    private final static int time = 10000;
+    private CountDownTimer timerCount;
+
+    String arr="";
+
     // now define cascadeClassifier for face detection
     private CascadeClassifier cascadeClassifier;
     // now call this in CameraActivity
     facialExpressionRecognition(AssetManager assetManager, Context context, String modelPath,int inputSize) throws IOException {
         INPUT_SIZE=inputSize;
+        countDown();
         // set GPU for the interpreter
         Interpreter.Options options=new Interpreter.Options();
         gpuDelegate=new GpuDelegate();
@@ -101,12 +107,23 @@ public class facialExpressionRecognition {
         }
 
     }
-    // Before watching this video please watch my previous video :
-    //Facial Expression Or Emotion Recognition Android App Using TFLite (GPU) and OpenCV:Load Model Part 2
-    // Let's start
-    // Create a new function
-    // input and output are in Mat format
-    // call this in onCameraframe of CameraActivity
+
+    public void countDown(){
+
+        timerCount = new CountDownTimer(time, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                long tmp = millisUntilFinished / 1000;
+                Log.d("Ankit", String.valueOf(tmp));
+            }
+
+            public void onFinish() {
+                // Do your stuff
+                Log.d("Ankit", arr);
+            }
+        }.start();
+    }
+
     public Mat recognizeImage(Mat mat_image){
         // before predicting
         // our image is not properly align
@@ -136,8 +153,15 @@ public class facialExpressionRecognition {
 
         // now convert it to array
         Rect[] faceArray=faces.toArray();
-        // loop through each face
-        for (int i=0;i<faceArray.length;i++){
+        if(faceArray.length>0){
+            int i=0;
+            double a=faceArray[i].height*faceArray[i].width;
+            for(int j=1;j<faceArray.length;j++){
+                if (a<(faceArray[j].width*faceArray[j].height)){
+                    a=faceArray[j].width*faceArray[j].height;
+                    i=j;
+                }
+            }
             // if you want to draw rectangle around face
             //                input/output starting point ending point        color   R  G  B  alpha    thickness
             Imgproc.rectangle(mat_image,faceArray[i].tl(),faceArray[i].br(),new Scalar(0,255,0,255),2);
@@ -167,19 +191,13 @@ public class facialExpressionRecognition {
             Log.d("facial_expression","Output:  "+ emotion_v);
             // create a function that return text emotion
             String emotion_s=get_emotion_text(emotion_v);
+            arr=arr+emotion_s+" ";
             // now put text on original frame(mat_image)
             //             input/output    text: Angry (2.934234)
-            Imgproc.putText(mat_image,emotion_s+" ("+emotion_v+")",
+            Imgproc.putText(mat_image,emotion_s,
                     new Point((int)faceArray[i].tl().x+10,(int)faceArray[i].tl().y+20),
                     1,1.5,new Scalar(0,0,255,150),2);
             //      use to scale text      color     R G  B  alpha    thickness
-
-            // select device and run
-            // Everything is working fine
-            // Remember to try other model
-            // If you want me to improve model comment below
-            // This model had average accuracy it can be improve
-            // Bye
 
         }
 

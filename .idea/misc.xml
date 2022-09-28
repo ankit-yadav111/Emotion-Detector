@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="false" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Facial_Expression_App/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1725" />
+        <entry key="..\:/Facial_Expression_App/app/src/main/res/drawable/app_logo_background.xml" value="0.1725" />
+        <entry key="..\:/Facial_Expression_App/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1725" />
+        <entry key="..\:/Facial_Expression_App/app/src/main/res/drawable/roundcorner.xml" value="0.1725" />
+        <entry key="..\:/Facial_Expression_App/app/src/main/res/layout/activity_camera.xml" value="0.13541666666666666" />
+        <entry key="..\:/Facial_Expression_App/app/src/main/res/layout/activity_main.xml" value="0.13541666666666666" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
