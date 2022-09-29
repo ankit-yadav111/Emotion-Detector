@@ -34,18 +34,18 @@ import java.nio.channels.FileChannel;
 public class facialExpressionRecognition {
     // define interpreter
     // Before this implement tensorflow to build.gradle file
-    private Interpreter interpreter;
+    private final Interpreter interpreter;
     // define input size
-    private int INPUT_SIZE;
+    private final int INPUT_SIZE;
     // define height and width of original frame
-    private int height=0;
-    private int width=0;
+    // private int height=0;
+    // private int width=0;
     // now define Gpudelegate
     // it is use to implement gpu in interpreter
     private GpuDelegate gpuDelegate=null;
 
-    private final static int time = 10000;
-    private CountDownTimer timerCount;
+    private final static int time = 20000;
+//    private CountDownTimer timerCount;
 
     String arr="";
 
@@ -110,7 +110,7 @@ public class facialExpressionRecognition {
 
     public void countDown(){
 
-        timerCount = new CountDownTimer(time, 1000) {
+        CountDownTimer timerCount = new CountDownTimer(time, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 long tmp = millisUntilFinished / 1000;
@@ -119,9 +119,32 @@ public class facialExpressionRecognition {
 
             public void onFinish() {
                 // Do your stuff
-                Log.d("Ankit", arr);
+                String ans=avgEmotion();
+                Log.d("Ankit", "OKAY : "+ans);
             }
         }.start();
+    }
+
+    public String avgEmotion(){
+        String[] temp = arr.split(" ");
+        String[] emotion ={"Anger","Fear","Happy","Disgust","Surprise","Sad","Neutral"};
+        String result="";
+        int ans=0;
+        for (int i = 0; i < 7; i++) {
+            int ct=0;
+            String word;
+            word = emotion[i];
+            for (String s : temp) {
+                if (word.equals(s))
+                    ct = ct + 1;
+            }
+            if(ans<ct){
+                ans=ct;
+                result=word;
+            }
+        }
+        Log.d("Ankit",result);
+        return result;
     }
 
     public Mat recognizeImage(Mat mat_image){
@@ -134,8 +157,8 @@ public class facialExpressionRecognition {
         Mat grayscaleImage=new Mat();
         Imgproc.cvtColor(mat_image,grayscaleImage,Imgproc.COLOR_RGBA2GRAY);
         // set height and width
-        height=grayscaleImage.height();
-        width=grayscaleImage.width();
+        int height=grayscaleImage.height();
+        int width=grayscaleImage.width();
 
         // define minimum height of face in original image
         // below this size no face in original image will show
