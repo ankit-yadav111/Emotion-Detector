@@ -1,9 +1,5 @@
 package com.example.imagepro;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
@@ -13,18 +9,20 @@ import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
 
 public class CameraActivity extends Activity implements CameraBridgeViewBase.CvCameraViewListener2{
-    private static final String TAG="MainActivity";
+    private static final String TAG="yadav";
 
     private Mat mRgba;
     private Mat mGray;
@@ -110,7 +108,6 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
             mOpenCvCameraView.disableView();
         }
     }
-
     public void onDestroy(){
         super.onDestroy();
         if(mOpenCvCameraView !=null){

@@ -5,6 +5,7 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.os.CountDownTimer;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
 import org.opencv.android.Utils;
@@ -30,6 +31,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Locale;
 
 public class facialExpressionRecognition {
     // define interpreter
@@ -44,6 +46,8 @@ public class facialExpressionRecognition {
     // it is use to implement gpu in interpreter
     private GpuDelegate gpuDelegate=null;
 
+    TextToSpeech textToSpeech;
+
     private final static int time = 20000;
 //    private CountDownTimer timerCount;
 
@@ -53,8 +57,24 @@ public class facialExpressionRecognition {
     private CascadeClassifier cascadeClassifier;
     // now call this in CameraActivity
     facialExpressionRecognition(AssetManager assetManager, Context context, String modelPath,int inputSize) throws IOException {
-        INPUT_SIZE=inputSize;
+
+        // Initialising the textToSpeech:
+        textToSpeech = new TextToSpeech(context.getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+
+                // if No error is found then only it will run
+                if(i!=TextToSpeech.ERROR){
+                    // To Choose language of speech
+                    textToSpeech.setLanguage(Locale.UK);
+                }
+            }
+        });
+
+        // Starting the countDown....
         countDown();
+
+        INPUT_SIZE=inputSize;
         // set GPU for the interpreter
         Interpreter.Options options=new Interpreter.Options();
         gpuDelegate=new GpuDelegate();
@@ -120,7 +140,13 @@ public class facialExpressionRecognition {
             public void onFinish() {
                 // Do your stuff
                 String ans=avgEmotion();
+                textToSpeech.speak(ans,TextToSpeech.QUEUE_FLUSH,null);
+                arr="";
                 Log.d("Ankit", "OKAY : "+ans);
+
+                // Restart the countDown..... 
+                countDown();
+
             }
         }.start();
     }
