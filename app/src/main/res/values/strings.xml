@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Emotion Detector</string>
+    <string name="app_name">BlindFeel</string>
+    <string name="start">Start</string>
 </resources>
